@@ -9,9 +9,9 @@ public class RecordStore {
     //Definition of the localhost server
     private static String DB_CONNECTION_URL = "jdbc:mysql://localhost:3306/";
     //The database name to be created in Mysql
-    private static final String DB_NAME = "Cubesdatabase";
+    private static final String DB_NAME = "cubesdatabase";
     //User name and password for the user on the database
-    private static final String USER = "Momo";
+    private static final String USER = "root";
     private static final String  PASS = "password"; //todo
 
     //
@@ -22,12 +22,12 @@ public class RecordStore {
 
     public final static String RUBIC = "ALBUM_TABLE";   //The table name
 
-    public final static String PK_COLUMN = "Number";//Wanted this to be a primary key but have problem getting it to work
+    public final static String PK_COLUMN = "id";//Wanted this to be a primary key but have problem getting it to work
     //A primary key is needed to allow updates to the database on modifications to ResultSet
     public final static String ARTIST_NAME = "Artist"; //Variable of the Cube solver which define the cube solver
     public final static String ARTIST_SONG= "Song";  //The variable that holds the time in seconds in the database;
     private static AlbumDataModel dataModel;  //The model varible of the data model
-    private final static double PRICE = 0;
+    private final static String PRICE = "Price";
 
 
     public static void main(String[] args) {
@@ -121,8 +121,8 @@ public class RecordStore {
             if (!rubikTableexist()) {
                 PreparedStatement psInsert = null;
                 // Creation of the table
-                String createTable = "CREATE TABLE if not exists " + RUBIC + "(" + PK_COLUMN + " int not null auto_increment, " + ARTIST_NAME + " VARCHAR(50), " + ARTIST_SONG + " VARCHAR(50), "+PRICE+ " DOUBLE, Primary key (" + PK_COLUMN + "))";
-
+                String createTable = "CREATE TABLE if not exists " + RUBIC + " (" + PK_COLUMN + " int not null auto_increment, " + ARTIST_NAME + " VARCHAR(50), " + ARTIST_SONG + " VARCHAR(50), "+PRICE+ " DOUBLE, Primary key (" + PK_COLUMN + "))";
+                System.out.println(createTable);
 
 
                 statement.executeUpdate(createTable);
@@ -130,19 +130,17 @@ public class RecordStore {
                 String artistNameLP1 = testCD3.getArtist();
                 String artistName4 = testCD3.getArtist();
                 //Use of the prepared statement
+                //String addDataSql = "INSERT INTO " +  RUBIC  + "(" + ARTIST_NAME + "," + ARTIST_SONG + ","+PRICE +") VALUES  (?, ?, ?)";
                 String addDataSql = "INSERT INTO " +  RUBIC  + "(" + ARTIST_NAME + "," + ARTIST_SONG + ","+PRICE +") VALUES  (?, ?, ?)";
+                System.out.println(addDataSql);
                 psInsert = conn.prepareStatement(addDataSql);
                 //Setting of prepared statement varioable
-                psInsert.setString(1, artistName4);
-               // psInsert.executeUpdate();
 
+                psInsert.setString(1, artistName4);
                 psInsert.setString(2, "Test");
                 psInsert.setDouble(3, 3.4);
                 psInsert.executeUpdate();
 
-//                psInsert.setString(1,"Cubestormer II robot");
-//                psInsert.setDouble(2, 5.27);
-//                psInsert.executeUpdate();
 
                 psInsert.close();
 
