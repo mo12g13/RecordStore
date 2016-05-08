@@ -9,7 +9,7 @@ import java.sql.SQLException;
  */
 public class AlbumDataModel extends AbstractTableModel{
     private int rowCount =0;
-    private int colCunt =0;
+    private int colCount =0;
     ResultSet resultSet;
 
     public AlbumDataModel(ResultSet rs){
@@ -23,7 +23,7 @@ public class AlbumDataModel extends AbstractTableModel{
     private  void setUP(){
         countRows();
         try {
-            colCunt = resultSet.getMetaData().getColumnCount();
+            colCount = resultSet.getMetaData().getColumnCount();
         }catch (SQLException ce){
             System.out.println("Error occur in column count "+ce);
 
@@ -59,7 +59,7 @@ public class AlbumDataModel extends AbstractTableModel{
     @Override
     public int getColumnCount() {
 
-        return colCunt;
+        return colCount;
     }
 
     @Override
@@ -89,11 +89,14 @@ public class AlbumDataModel extends AbstractTableModel{
         }
     }
     //A method that insert a row in the database
-    public boolean insertRow(String cube_Solver, double time_In_seconds ){
+    public boolean insertRows(String artist, String song, double price, String nameOfConsignor, String consignorNumber  ){
         try{
             resultSet.moveToInsertRow();
-            resultSet.updateString(RecordStore.ARTIST_NAME, cube_Solver);
-            resultSet.updateDouble(RecordStore.ARTIST_SONG, time_In_seconds);
+            resultSet.updateString(RecordStore.ARTIST_NAME, artist);
+            resultSet.updateString(RecordStore.ARTIST_SONG, song);
+            resultSet.updateDouble(RecordStore.PRICE, price);
+            resultSet.updateString(RecordStore.NAME, nameOfConsignor);
+            resultSet.updateString(RecordStore.CONSIGNORPHONENUMBER, consignorNumber);
             resultSet.insertRow();
             countRows();
             fireTableDataChanged();

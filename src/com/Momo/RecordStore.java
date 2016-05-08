@@ -1,5 +1,6 @@
 package com.Momo;
 
+import javax.swing.*;
 import java.sql.*;
 import java.util.ArrayList;
 
@@ -12,7 +13,7 @@ public class RecordStore {
     private static final String DB_NAME = "cubesdatabase";
     //User name and password for the user on the database
     private static final String USER = "root";
-    private static final String  PASS = "password"; //todo
+    private static final String  PASS = "Flower1987!"; //todo
 
     //
     static Statement statement = null;
@@ -20,30 +21,22 @@ public class RecordStore {
     static ResultSet rs = null;
 
 
-    public final static String RUBIC = "ALBUM_TABLE";   //The table name
+    public final static String INVENTRY = "ALBUM_TABLE";   //The table name
 
     public final static String PK_COLUMN = "id";//Wanted this to be a primary key but have problem getting it to work
     //A primary key is needed to allow updates to the database on modifications to ResultSet
-    public final static String ARTIST_NAME = "Artist"; //Variable of the Cube solver which define the cube solver
-    public final static String ARTIST_SONG= "Song";  //The variable that holds the time in seconds in the database;
+    public final static String ARTIST_NAME = "artist"; //Variable of the Cube solver which define the cube solver
+    public final static String ARTIST_SONG= "song";  //The variable that holds the time in seconds in the database;
     private static AlbumDataModel dataModel;  //The model varible of the data model
-    private final static String PRICE = "Price";
+    public final static String PRICE = "price";
+    public final static String NAME = "NameOfConsignor";
+    public final static String CONSIGNORPHONENUMBER = "consignorNumber";
 
 
     public static void main(String[] args) {
-       // A setup that creates the database
-                //Create some example CDs and add them to an inventory list
+        // A setup that creates the database
+        //Create some example CDs and add them to an inventory list
         ArrayList<CD> cdInventory = new ArrayList<CD>();
-
-        CD testCD1 = new CD("Lady Gaga", "The Fame Monster", 6.99);
-        CD testCD2 = new CD("Bob Dylan", "Basement Tapes", 9.99);
-        String artistNameCD1 = testCD1.getArtist();
-        String artisNameCD2 = testCD2.getArtist();
-        String titleCD1 = testCD1.getTitle();
-        String titelCD2 = testCD2.getTitle();
-        double priceCD1 = testCD1.getPrice();
-        double priceCD2 = testCD2.getPrice();
-
 
 
 //        cdInventory.add(testCD1);
@@ -60,14 +53,6 @@ public class RecordStore {
 //        lpInventory.add(testLP2);
 
 
-        String titleLP1 = testLP1.getTitle();
-        double priceLP1 = testLP1.getPrice();
-
-        String artistNameLP2 = testLP2.getArtist();
-        String titleLP2 = testLP2.getTitle();
-        double priceLP2 = testLP2.getPrice();
-
-
         if (!setUP()) {
             System.exit(-1);
 
@@ -78,16 +63,38 @@ public class RecordStore {
 
 
         //Initailization of the data form which lunch the gui
+
+        try {
+            for (UIManager.LookAndFeelInfo info : UIManager.getInstalledLookAndFeels()) {
+                if ("Nimbus".equals(info.getName())) {
+                    UIManager.setLookAndFeel(info.getClassName());
+
+                    break;
+                }
+            }
+        } catch (ClassNotFoundException e) {
+
+        } catch (InstantiationException e) {
+
+        } catch (IllegalAccessException b) {
+
+        } catch (UnsupportedLookAndFeelException b) {
+
+        }
         AlbumGui jtable = new AlbumGui(dataModel);
 
     }
+
+
+
+
     //A method that either create or recreate the resultset
     public static boolean loadRubikCubeData() {
         try {
             if (rs != null) {
                 rs.close();
             }
-            String loadData = "SELECT * FROM " + RUBIC ;
+            String loadData = "SELECT * FROM " + INVENTRY ;
             rs = statement.executeQuery(loadData);
             if (dataModel == null) {
                 dataModel = new AlbumDataModel(rs);
@@ -121,26 +128,62 @@ public class RecordStore {
             if (!rubikTableexist()) {
                 PreparedStatement psInsert = null;
                 // Creation of the table
-                String createTable = "CREATE TABLE if not exists " + RUBIC + " (" + PK_COLUMN + " int not null auto_increment, " + ARTIST_NAME + " VARCHAR(50), " + ARTIST_SONG + " VARCHAR(50), "+PRICE+ " DOUBLE, Primary key (" + PK_COLUMN + "))";
+                String createTable = "CREATE TABLE if not exists " + INVENTRY + " (" + PK_COLUMN + " int not null auto_increment, "
+                        + ARTIST_NAME + " VARCHAR(50), " + ARTIST_SONG + " VARCHAR(50), "+PRICE+ " DOUBLE,   "+NAME +" VARCHAR(50), "
+                        +CONSIGNORPHONENUMBER+" VARCHAR(50),Primary key (" + PK_COLUMN + "))";
                 System.out.println(createTable);
 
 
                 statement.executeUpdate(createTable);
-                CD testCD3 = new CD("Lady Gaga", "The Fame Monster", 6.99);
-                String artistNameLP1 = testCD3.getArtist();
-                String artistName4 = testCD3.getArtist();
+
                 //Use of the prepared statement
                 //String addDataSql = "INSERT INTO " +  RUBIC  + "(" + ARTIST_NAME + "," + ARTIST_SONG + ","+PRICE +") VALUES  (?, ?, ?)";
-                String addDataSql = "INSERT INTO " +  RUBIC  + "(" + ARTIST_NAME + "," + ARTIST_SONG + ","+PRICE +") VALUES  (?, ?, ?)";
+                String addDataSql = "INSERT INTO " +  INVENTRY  + "(" + ARTIST_NAME + "," + ARTIST_SONG + ","+PRICE +", "+NAME
+                        +", "+CONSIGNORPHONENUMBER +") VALUES  (?, ?, ?, ?, ?)";
                 System.out.println(addDataSql);
                 psInsert = conn.prepareStatement(addDataSql);
                 //Setting of prepared statement varioable
+                LP testLP1 = new LP("Michael Jackson", "Thriller", 4, 9.99);
+                LP testLP2 = new LP("Replacements", "Hootenanny", 3, 7.99);
 
-                psInsert.setString(1, artistName4);
-                psInsert.setString(2, "Test");
-                psInsert.setDouble(3, 3.4);
+
+                CD testCD1 = new CD("Lady Gaga", "The Fame Monster", 6.99);
+                CD testCD2 = new CD("Bob Dylan", "Basement Tapes", 9.99);
+                String artistNameCD1 = testCD1.getArtist();
+
+                psInsert.setString(1,artistNameCD1);
+                psInsert.setString(2, testCD1.getTitle());
+                psInsert.setDouble(3, testCD1.getPrice());
+                psInsert.setString(4, "Momo Johnson");
+                psInsert.setString(5, "612-559-6028");
                 psInsert.executeUpdate();
 
+                psInsert.setString(1, testCD2.getArtist());
+                psInsert.setString(2, testCD2.getTitle());
+                psInsert.setDouble(3, testCD2.getPrice());
+                psInsert.setString(4, "Momo Johnson");
+                psInsert.executeUpdate();
+
+                psInsert.setString(1, testLP1.getArtist());
+                psInsert.setString(2, testLP1.getTitle());
+                psInsert.setDouble(3, testLP1.getPrice());
+                psInsert.setString(4, "Samuel Johnson");
+                psInsert.setString(5, "612-555-4444");
+                psInsert.executeUpdate();
+
+                psInsert.setString(1, testLP2.getArtist());
+                psInsert.setString(2, testLP2.getTitle());
+                psInsert.setDouble(3, testLP2.getPrice());
+                psInsert.setString(4, "James Frank");
+                psInsert.setString(5, "651-888-8585");
+                psInsert.executeUpdate();
+
+                psInsert.setString(1, "Momo Johnson");
+                psInsert.setString(2, "All of you");
+                psInsert.setDouble(3, 3.3);
+                psInsert.setString(4, "null");
+                psInsert.setString(5, "215-445-5858");
+                psInsert.executeUpdate();
 
                 psInsert.close();
 
@@ -159,7 +202,7 @@ public class RecordStore {
     }
     //A method that checks if result exist
     private static boolean rubikTableexist() throws SQLException{
-        String checkQuery = "SHOW TABLES LIKE '"+ RUBIC +"'";
+        String checkQuery = "SHOW TABLES LIKE '"+ INVENTRY +"'";
         ResultSet tableRs = statement.executeQuery(checkQuery);
         if(tableRs.next()){
             return true;
