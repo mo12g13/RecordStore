@@ -145,6 +145,7 @@ public class RecordStore {
                 //Setting of prepared statement varioable
                 LP testLP1 = new LP("Michael Jackson", "Thriller", 4, 9.99);
                 LP testLP2 = new LP("Replacements", "Hootenanny", 3, 7.99);
+                //Hello
 
 
                 CD testCD1 = new CD("Lady Gaga", "The Fame Monster", 6.99);
