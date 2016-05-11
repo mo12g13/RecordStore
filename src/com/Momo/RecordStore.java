@@ -32,7 +32,7 @@ public class RecordStore {
     public final static String PRICE = "price";
     //public final static String NAME = " NameOfConsignor ";
     public final static String CONID = "consID";
-    //public final static String DATE_ENTER = " dateConsigned ";
+    public final static String DATE_ENTER = " dateConsigned ";
 
     public static void main(String[] args) {
 
@@ -125,17 +125,19 @@ public class RecordStore {
                 PreparedStatement psInsert = null;
                 // Creation of the table
                 String createTable = "CREATE TABLE if not exists " + INVENTRY + " (" + PK_COLUMN + " int not null auto_increment, "
-                        + ARTIST_NAME + " VARCHAR(50), " + TITLE + " VARCHAR(50), "+ PRICE + " DOUBLE,   "+ CONID + " int ,Primary key (" + PK_COLUMN + "))";
+                        + ARTIST_NAME + " VARCHAR(50), " + TITLE + " VARCHAR(50), "+ PRICE + " DOUBLE,   "+ CONID + " int , " + DATE_ENTER + "  Date, Primary key (" + PK_COLUMN + "))";
                 System.out.println(createTable);
 
 
                 statement.executeUpdate(createTable);
 
 
-                String addDataSql = " INSERT INTO " +  INVENTRY  + "(" + ARTIST_NAME + "," + TITLE + ","+ PRICE +", "+ CONID + ") VALUES  (?, ?, ?, ?)";
+                String addDataSql = " INSERT INTO " +  INVENTRY  + "(" + ARTIST_NAME + "," + TITLE + ","+ PRICE +", "+ CONID + ", " + DATE_ENTER +") VALUES  (?, ?, ?, ?, ?)";
                 System.out.println(addDataSql);
                 psInsert = conn.prepareStatement(addDataSql);
                 //Setting of prepared statement varioable
+
+
 
 
 
@@ -144,20 +146,20 @@ public class RecordStore {
                 date = new java.sql.Date(dateConsigned.getTime());
 
 
-                LP testLP1 = new LP("Michael Jackson", "Thriller",  9.99, 4, date);
-                LP testLP2 = new LP("Replacements", "Hootenanny",  7.99, 3, date);
+                LP testLP1 = new LP("Michael Jackson", "Thriller",  9.99, 4,java.sql.Date.valueOf(date.toString()));
+                LP testLP2 = new LP("Replacements", "Hootenanny",  7.99, 3, java.sql.Date.valueOf(date.toString()));
                 //Hello
 
 
-                CD testCD1 = new CD("Lady Gaga", "The Fame Monster",  6.99, 3, date );
-                CD testCD2 = new CD("Bob Dylan", "Basement Tapes", 9.99, 3, date);
+                CD testCD1 = new CD("Lady Gaga", "The Fame Monster",  6.99, 3, java.sql.Date.valueOf(date.toString()) );
+                CD testCD2 = new CD("Bob Dylan", "Basement Tapes", 9.99, 3, java.sql.Date.valueOf(date.toString()));
                 String artistNameCD1 = testCD1.getArtist();
 
                 psInsert.setString(1, testCD1.getArtist());
                 psInsert.setString(2, testCD1.getTitle());
                 psInsert.setDouble(3, testCD1.getPrice());
                 psInsert.setInt(4, testCD1.getConID());
-                //psInsert.setDate(4, java.sql.Date.valueOf("2014-12-3"));
+                psInsert.setDate(5, java.sql.Date.valueOf("2014-12-3"));
                 psInsert.executeUpdate();
 
 
