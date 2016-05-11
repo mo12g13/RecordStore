@@ -7,10 +7,12 @@ public class CD extends Album {
 
     //CD objects can use the artist, title and price variables, because CD is an album.
 
-    public CD(String artist, String title, double price) {
+    public CD(String artist, String title, double price, int conID, java.util.Date dateConsigned) {
         this.artist = artist;
         this.title = title;
         this.price = price;
+        this.date= dateConsigned;
+        this.conID = conID;
     }
 
     @Override

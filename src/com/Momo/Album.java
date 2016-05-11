@@ -1,5 +1,7 @@
 package com.Momo;
 
+import java.util.Date;
+
 /**
  * Superclass of CD and LP
  * And the future 8-track class
@@ -14,6 +16,8 @@ public class Album {
     protected String artist;
     protected String title;
     protected double price;
+    java.util.Date date;
+    protected int conID;
 
     //Another way is to keep them private and use getters and setters.
 
@@ -27,6 +31,22 @@ public class Album {
 
     public double getPrice() {
         return price;
+    }
+
+    public Date getDate() {
+        return date;
+    }
+
+    public void setDate(Date date) {
+        this.date = date;
+    }
+
+    public int getConID() {
+        return conID;
+    }
+
+    public void setConID(int conID) {
+        this.conID = conID;
     }
 }
 

@@ -88,15 +88,18 @@ public class AlbumDataModel extends AbstractTableModel{
 
         }
     }
+
+
     //A method that insert a row in the database
-    public boolean insertRows(String artist, String song, double price, String nameOfConsignor, String consignorNumber  ){
+    public boolean insertRows(String artist, String song, double price, int nameOfConsignor){
         try{
             resultSet.moveToInsertRow();
             resultSet.updateString(RecordStore.ARTIST_NAME, artist);
-            resultSet.updateString(RecordStore.ARTIST_SONG, song);
+            resultSet.updateString(RecordStore.TITLE, song);
             resultSet.updateDouble(RecordStore.PRICE, price);
-            resultSet.updateString(RecordStore.NAME, nameOfConsignor);
-            resultSet.updateString(RecordStore.CONSIGNORPHONENUMBER, consignorNumber);
+            resultSet.updateInt(RecordStore.CONID, nameOfConsignor);
+           // resultSet.updateDate(RecordStore.DATE_ENTER, dateconsigned);
+
             resultSet.insertRow();
             countRows();
             fireTableDataChanged();

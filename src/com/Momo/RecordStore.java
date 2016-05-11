@@ -2,7 +2,8 @@ package com.Momo;
 
 import javax.swing.*;
 import java.sql.*;
-import java.util.ArrayList;
+import java.util.*;
+import java.util.Date;
 
 /** Inventory for second-hand record store, selling CDs and LPs */
 
@@ -24,33 +25,28 @@ public class RecordStore {
     public final static String INVENTRY = "ALBUM_TABLE";   //The table name
 
     public final static String PK_COLUMN = "id";//Wanted this to be a primary key but have problem getting it to work
-    //A primary key is needed to allow updates to the database on modifications to ResultSet
+    //A primary key is needed to alDlow updates to the database on modifications to ResultSet
     public final static String ARTIST_NAME = "artist"; //Variable of the Cube solver which define the cube solver
-    public final static String ARTIST_SONG= "song";  //The variable that holds the time in seconds in the database;
+    public final static String TITLE= "song";  //The variable that holds the time in seconds in the database;
     private static AlbumDataModel dataModel;  //The model varible of the data model
     public final static String PRICE = "price";
-    public final static String NAME = "NameOfConsignor";
-    public final static String CONSIGNORPHONENUMBER = "consignorNumber";
-
+    //public final static String NAME = " NameOfConsignor ";
+    public final static String CONID = "consID";
+    //public final static String DATE_ENTER = " dateConsigned ";
 
     public static void main(String[] args) {
-        // A setup that creates the database
-        //Create some example CDs and add them to an inventory list
-        ArrayList<CD> cdInventory = new ArrayList<CD>();
 
 
-//        cdInventory.add(testCD1);
-//        cdInventory.add(testCD2);
-//
+
+
+
+
+
+
 
         //Create some example LPs and add them to an inventory list
         ArrayList<LP> lpInventory = new ArrayList<LP>();
 
-        LP testLP1 = new LP("Michael Jackson", "Thriller", 4, 9.99);
-        LP testLP2 = new LP("Replacements", "Hootenanny", 3, 7.99);
-
-//        lpInventory.add(testLP1);
-//        lpInventory.add(testLP2);
 
 
         if (!setUP()) {
@@ -129,62 +125,70 @@ public class RecordStore {
                 PreparedStatement psInsert = null;
                 // Creation of the table
                 String createTable = "CREATE TABLE if not exists " + INVENTRY + " (" + PK_COLUMN + " int not null auto_increment, "
-                        + ARTIST_NAME + " VARCHAR(50), " + ARTIST_SONG + " VARCHAR(50), "+PRICE+ " DOUBLE,   "+NAME +" VARCHAR(50), "
-                        +CONSIGNORPHONENUMBER+" VARCHAR(50),Primary key (" + PK_COLUMN + "))";
+                        + ARTIST_NAME + " VARCHAR(50), " + TITLE + " VARCHAR(50), "+ PRICE + " DOUBLE,   "+ CONID + " int ,Primary key (" + PK_COLUMN + "))";
                 System.out.println(createTable);
 
 
                 statement.executeUpdate(createTable);
 
-                //Use of the prepared statement
-                //String addDataSql = "INSERT INTO " +  RUBIC  + "(" + ARTIST_NAME + "," + ARTIST_SONG + ","+PRICE +") VALUES  (?, ?, ?)";
-                String addDataSql = "INSERT INTO " +  INVENTRY  + "(" + ARTIST_NAME + "," + ARTIST_SONG + ","+PRICE +", "+NAME
-                        +", "+CONSIGNORPHONENUMBER +") VALUES  (?, ?, ?, ?, ?)";
+
+                String addDataSql = " INSERT INTO " +  INVENTRY  + "(" + ARTIST_NAME + "," + TITLE + ","+ PRICE +", "+ CONID + ") VALUES  (?, ?, ?, ?)";
                 System.out.println(addDataSql);
                 psInsert = conn.prepareStatement(addDataSql);
                 //Setting of prepared statement varioable
-                LP testLP1 = new LP("Michael Jackson", "Thriller", 4, 9.99);
-                LP testLP2 = new LP("Replacements", "Hootenanny", 3, 7.99);
+
+
+
+                java.sql.Date date;
+                java.util.Date dateConsigned = new java.util.Date();
+                date = new java.sql.Date(dateConsigned.getTime());
+
+
+                LP testLP1 = new LP("Michael Jackson", "Thriller",  9.99, 4, date);
+                LP testLP2 = new LP("Replacements", "Hootenanny",  7.99, 3, date);
                 //Hello
 
 
-                CD testCD1 = new CD("Lady Gaga", "The Fame Monster", 6.99);
-                CD testCD2 = new CD("Bob Dylan", "Basement Tapes", 9.99);
+                CD testCD1 = new CD("Lady Gaga", "The Fame Monster",  6.99, 3, date );
+                CD testCD2 = new CD("Bob Dylan", "Basement Tapes", 9.99, 3, date);
                 String artistNameCD1 = testCD1.getArtist();
 
-                psInsert.setString(1,artistNameCD1);
+                psInsert.setString(1, testCD1.getArtist());
                 psInsert.setString(2, testCD1.getTitle());
                 psInsert.setDouble(3, testCD1.getPrice());
-                psInsert.setString(4, "Momo Johnson");
-                psInsert.setString(5, "612-559-6028");
+                psInsert.setInt(4, testCD1.getConID());
+                //psInsert.setDate(4, java.sql.Date.valueOf("2014-12-3"));
                 psInsert.executeUpdate();
 
-                psInsert.setString(1, testCD2.getArtist());
-                psInsert.setString(2, testCD2.getTitle());
-                psInsert.setDouble(3, testCD2.getPrice());
-                psInsert.setString(4, "Momo Johnson");
-                psInsert.executeUpdate();
 
-                psInsert.setString(1, testLP1.getArtist());
-                psInsert.setString(2, testLP1.getTitle());
-                psInsert.setDouble(3, testLP1.getPrice());
-                psInsert.setString(4, "Samuel Johnson");
-                psInsert.setString(5, "612-555-4444");
-                psInsert.executeUpdate();
 
-                psInsert.setString(1, testLP2.getArtist());
-                psInsert.setString(2, testLP2.getTitle());
-                psInsert.setDouble(3, testLP2.getPrice());
-                psInsert.setString(4, "James Frank");
-                psInsert.setString(5, "651-888-8585");
-                psInsert.executeUpdate();
+//                psInsert.setString(1, testCD2.getArtist());
+//                psInsert.setString(2, testCD2.getTitle());
+//                psInsert.setDouble(3, testCD2.getPrice());
+//                psInsert.setInt(4, testCD2.getConID());
+//                psInsert.setDate(5, date);
+//                psInsert.executeUpdate();
 
-                psInsert.setString(1, "Momo Johnson");
-                psInsert.setString(2, "All of you");
-                psInsert.setDouble(3, 3.3);
-                psInsert.setString(4, "null");
-                psInsert.setString(5, "215-445-5858");
-                psInsert.executeUpdate();
+//                psInsert.setString(1, testLP1.getArtist());
+//                psInsert.setString(2, testLP1.getTitle());
+//                psInsert.setDouble(3, testLP1.getPrice());
+//                psInsert.setString(4, "Samuel Johnson");
+//                psInsert.setString(5, "612-555-4444");
+//                psInsert.executeUpdate();
+//
+//                psInsert.setString(1, testLP2.getArtist());
+//                psInsert.setString(2, testLP2.getTitle());
+//                psInsert.setDouble(3, testLP2.getPrice());
+//                psInsert.setString(4, "James Frank");
+//                psInsert.setString(5, "651-888-8585");
+//                psInsert.executeUpdate();
+//
+//                psInsert.setString(1, "Momo Johnson");
+//                psInsert.setString(2, "All of you");
+//                psInsert.setDouble(3, 3.3);
+//                psInsert.setString(4, "null");
+//                psInsert.setString(5, "215-445-5858");
+//                psInsert.executeUpdate();
 
                 psInsert.close();
 

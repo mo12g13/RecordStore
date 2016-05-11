@@ -1,12 +1,15 @@
 package com.Momo;
 
 import javax.swing.*;
+import javax.swing.event.TableModelEvent;
+import javax.swing.event.TableModelListener;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
-import java.awt.geom.Arc2D;
+import java.sql.Date;
+import java.util.IllegalFormatException;
 
 /**
  * Created by Momo Johnson on 5/4/2016.
@@ -18,10 +21,8 @@ public class AlbumGui extends JFrame implements WindowListener {
     private JButton deleteButton;
     private JButton quitButton;
     private JPanel rootpane;
-    private JButton updateMusicButton;
     private JTable recordTable;
-    private JTextField consignorName;
-    private JTextField consignorPhoneNumber;
+    private JTextField conNum;
     private JTextField price;
     private JButton buyMusicButton;
 
@@ -36,12 +37,11 @@ public class AlbumGui extends JFrame implements WindowListener {
         addWindowListener(this);
         setVisible(true);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        setSize(990,550);
-                //setting up the Jtable
+        setSize(600, 550);
+        //setting up the Jtable
         recordTable.setGridColor(Color.blue);
 
         recordTable.setModel(recordStoreDataModel);
-
 
 
         //Action listener for the add button
@@ -50,46 +50,59 @@ public class AlbumGui extends JFrame implements WindowListener {
             public void actionPerformed(ActionEvent e) {
                 String artistName = nameOfArtist.getText();
                 if (artistName == null || artistName.trim().equals("")) {
-                    JOptionPane.showMessageDialog(rootPane, "Please enter valid text", "Error", JOptionPane.ERROR_MESSAGE);
+                    JOptionPane.showMessageDialog(rootPane, "Please Enter artist name", "Error", JOptionPane.ERROR_MESSAGE);
                     return;
 
                 }
 
                 String artistSong = songName.getText();
-                if(artistSong == null||artistSong.trim().equals("")){
-                    JOptionPane.showMessageDialog(rootpane, "Enter a valid text", "Error", JOptionPane.ERROR_MESSAGE);
+                if (artistSong == null || artistSong.trim().equals("")) {
+                    JOptionPane.showMessageDialog(rootpane, "Please enter song name", "Error", JOptionPane.ERROR_MESSAGE);
                     return;
                 }
 
                 double priceOfSong;
-                try{
+                try {
                     priceOfSong = Double.parseDouble(price.getText());
-                    if(priceOfSong<0.0){
+                    if (priceOfSong < 0.0) {
                         throw new NumberFormatException("Enter a Positive Number");
                     }
-                }catch (NumberFormatException ne){
+                } catch (NumberFormatException ne) {
                     JOptionPane.showMessageDialog(rootpane, "Enter a number greater than zero", "Error", JOptionPane.ERROR_MESSAGE);
                     return;
                 }
 
-                String consignorFullName = consignorName.getText();
-                        ;
-                if(consignorFullName == null || consignorFullName.trim().equals("")){
-                    JOptionPane.showMessageDialog(rootpane, "Enter valid text", "Error", JOptionPane.ERROR_MESSAGE);
-                    return;
+//                String dateEnter = date.getText();
+//                        ;
+//                if(dateEnter== null || dateEnter.trim().equals("")){
+//                    JOptionPane.showMessageDialog(rootpane, "Enter valid text", "Error", JOptionPane.ERROR_MESSAGE);
+//                    return;
+//
+//                }
 
+
+                int conNumID;
+                try {
+                    conNumID = Integer.parseInt(conNum.getText());
+                    if (conNumID < 0) throw new NumberFormatException("Please enter a postive number");
+                } catch (NumberFormatException ce) {
+                    JOptionPane.showMessageDialog(rootpane, "Please Enter consignor ID", "Error", JOptionPane.ERROR_MESSAGE);
+                    return;
                 }
 
-                String consignorNumber = consignorPhoneNumber.getText();
-                if(consignorNumber == null ||  consignorNumber.trim().equals("")){
-                    JOptionPane.showMessageDialog(rootpane, "Enter Valid text", "Error", JOptionPane.ERROR_MESSAGE);
-                    return;
-                }
-                boolean insertRow = recordStoreDataModel.insertRows(artistName, artistSong, priceOfSong, consignorFullName, consignorNumber);
 
-                if(!insertRow){
+//                Date todayDate = Date.valueOf(dateEnter);
+                boolean insertRow = recordStoreDataModel.insertRows(artistName, artistSong, priceOfSong, conNumID);
+
+                if (!insertRow) {
                     JOptionPane.showMessageDialog(rootpane, "Some field are left empty", "Error", JOptionPane.ERROR_MESSAGE);
                 }
+
+                songName.setText("");
+                nameOfArtist.setText("");
+                conNum.setText("");
+                price.setText("");
+
             }
         });
 
@@ -103,23 +116,28 @@ public class AlbumGui extends JFrame implements WindowListener {
             }
         });
 
+
+
+
+
         //An action listener for the delete button
         deleteButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 int row = recordTable.getSelectedRow();
-                if(row == -1){
+                if (row == -1) {
                     JOptionPane.showMessageDialog(rootPane, "Please choose a cube solver to be deleted");
                 }
                 boolean todelete = recordStoreDataModel.deleteRow(row);
-                if(todelete){
+                if (todelete) {
                     RecordStore.loadRubikCubeData();
-                }else {
+                } else {
                     JOptionPane.showMessageDialog(rootPane, "Warning, Error deleting cube_solver");
                 }
             }
         });
     }
+
     @Override
     public void windowOpened(WindowEvent e) {
 
