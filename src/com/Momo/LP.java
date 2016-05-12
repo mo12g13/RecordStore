@@ -13,12 +13,12 @@ public class LP extends Album{
     //We need to specialize LP to add a variable for condition.
     private int condition;   //1 = barely playable, 5 = mint
 
-    public LP(String artist, String title, double price, int conID, java.util.Date dateConsinged) {
+    public LP(String artist, String title, double price, int conID) {
         this.artist = artist;
         this.title = title;
        this.conID = conID;
         this.price = price;
-        this.date = dateConsinged;
+
     }
 
     @Override

@@ -25,6 +25,8 @@ public class AlbumGui extends JFrame implements WindowListener {
     private JTextField conNum;
     private JTextField price;
     private JButton buyMusicButton;
+    private JButton viewConsignorTableButton;
+    public static  ConsignorModel consignorModel;
 
     AlbumDataModel addToTable;
 
@@ -37,7 +39,7 @@ public class AlbumGui extends JFrame implements WindowListener {
         addWindowListener(this);
         setVisible(true);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        setSize(600, 550);
+        setSize(650, 600);
         //setting up the Jtable
         recordTable.setGridColor(Color.blue);
 
@@ -120,6 +122,7 @@ public class AlbumGui extends JFrame implements WindowListener {
 
 
 
+
         //An action listener for the delete button
         deleteButton.addActionListener(new ActionListener() {
             @Override
@@ -134,6 +137,13 @@ public class AlbumGui extends JFrame implements WindowListener {
                 } else {
                     JOptionPane.showMessageDialog(rootPane, "Warning, Error deleting cube_solver");
                 }
+            }
+        });
+
+        viewConsignorTableButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                ConsignorGUI consignor = new ConsignorGUI(RecordStore.dataConsigModel);
             }
         });
     }

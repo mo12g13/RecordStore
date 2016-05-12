@@ -5,14 +5,15 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 
 /**
- * Created by Momo Johnson on 5/4/2016.
+ * Created by Momo Johnson on 5/11/2016.
  */
-public class AlbumDataModel extends AbstractTableModel{
+public class ConsignorModel extends AbstractTableModel {
+
     private int rowCount =0;
     private int colCount =0;
     ResultSet resultSet;
 
-    public AlbumDataModel(ResultSet rs){
+    public ConsignorModel(ResultSet rs){
         this.resultSet = rs;
         setUP();
 
@@ -95,14 +96,14 @@ public class AlbumDataModel extends AbstractTableModel{
 
 
     //A method that insert a row in the database
-    public boolean insertRows(String artist, String song, double price, int nameOfConsignor){
+    public boolean insertRows(String consingname, int conID, String phoneNum, double moneyOwed){
         try{
             resultSet.moveToInsertRow();
-            resultSet.updateString(RecordStore.ARTIST_NAME, artist);
-            resultSet.updateString(RecordStore.TITLE, song);
-            resultSet.updateDouble(RecordStore.PRICE, price);
-            resultSet.updateInt(RecordStore.CONID, nameOfConsignor);
-           // resultSet.updateDate(RecordStore.DATE_ENTER, dateconsigned);
+            resultSet.updateString(RecordStore.CONSIG_NAME, consingname);
+            resultSet.updateInt(RecordStore.CONID, conID);
+            resultSet.updateString(RecordStore.PHONE_NUM, phoneNum);
+            resultSet.updateDouble(RecordStore.MONEYOWED, moneyOwed);
+            // resultSet.updateDate(RecordStore.DATE_ENTER, dateconsigned);
 
             resultSet.insertRow();
             countRows();
@@ -135,6 +136,13 @@ public class AlbumDataModel extends AbstractTableModel{
 
 
 }
+
+
+
+
+
+
+
 
 
 

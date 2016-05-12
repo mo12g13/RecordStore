@@ -17,9 +17,11 @@ public class RecordStore {
     private static final String  PASS = "Flower1987!"; //todo
 
     //
-    static Statement statement = null;
+    static Statement statementAlbum = null;
+    static Statement statementConsig = null;
     static Connection conn = null;
-    static ResultSet rs = null;
+    static ResultSet resultSetalAlbum = null;
+    static ResultSet resultSetConsig = null;
 
 
     public final static String INVENTRY = "ALBUM_TABLE";   //The table name
@@ -28,13 +30,24 @@ public class RecordStore {
     //A primary key is needed to alDlow updates to the database on modifications to ResultSet
     public final static String ARTIST_NAME = "artist"; //Variable of the Cube solver which define the cube solver
     public final static String TITLE= "song";  //The variable that holds the time in seconds in the database;
-    private static AlbumDataModel dataModel;  //The model varible of the data model
-    public final static String PRICE = "price";
+
+    private static AlbumDataModel dataModel;  //Album data model
+    public final static String PRICE = "price";//price for the table
     //public final static String NAME = " NameOfConsignor ";
-    public final static String CONID = "consID";
-    public final static String DATE_ENTER = " dateConsigned ";
+    public final static String CONID = "consID";//concign id
+    public final static String DATE_ENTER = " dateConsigned ";//Date to be entered. Will be used later
+
+    public static final String CONSIG_TALBLE = "Consig_Table";//Consign table
+
+    public final static String PHONE_NUM = "PhoneNum";
+
+    public final static String CONSIG_NAME = "Name";
+    public final static String  MONEYOWED = "MoneyOwed";
+    public static ConsignorModel dataConsigModel;
+
 
     public static void main(String[] args) {
+
 
 
 
@@ -55,8 +68,8 @@ public class RecordStore {
         }
         if (!loadRubikCubeData()) {
             System.exit(-1);
-        }
 
+        }
 
         //Initailization of the data form which lunch the gui
 
@@ -79,6 +92,7 @@ public class RecordStore {
         }
         AlbumGui jtable = new AlbumGui(dataModel);
 
+
     }
 
 
@@ -87,17 +101,33 @@ public class RecordStore {
     //A method that either create or recreate the resultset
     public static boolean loadRubikCubeData() {
         try {
-            if (rs != null) {
-                rs.close();
+            if (resultSetalAlbum != null) {
+                resultSetalAlbum.close();
+            }
+
+            if(resultSetConsig !=null){
+                resultSetConsig.close();
             }
             String loadData = "SELECT * FROM " + INVENTRY ;
-            rs = statement.executeQuery(loadData);
+            resultSetalAlbum = statementAlbum.executeQuery(loadData);
             if (dataModel == null) {
-                dataModel = new AlbumDataModel(rs);
+                dataModel = new AlbumDataModel(resultSetalAlbum);
 
             } else {
-                dataModel.updateResultsSet(rs);
+                dataModel.updateResultsSet(resultSetalAlbum);
             }
+
+
+            String loadConsigData = " SELECT * FROM "+ CONSIG_TALBLE;
+            resultSetConsig = statementConsig.executeQuery(loadConsigData);
+            if(dataConsigModel == null){
+                dataConsigModel = new ConsignorModel(resultSetConsig);
+            }
+            else {
+                dataConsigModel.updateResultsSet(resultSetConsig);
+            }
+
+
             return true;
             //Catching of any error and displaying that particular error
         } catch (Exception e) {
@@ -107,6 +137,7 @@ public class RecordStore {
             return false;
         }
     }
+
 
     //A method that setup the database to be lunch and connected
     public static boolean setUP() {
@@ -119,20 +150,23 @@ public class RecordStore {
                 return false;
             }
             conn = DriverManager.getConnection(DB_CONNECTION_URL + DB_NAME, USER, PASS);
-            statement = conn.createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_UPDATABLE);
+            statementAlbum = conn.createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_UPDATABLE);
+            statementConsig = conn.createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_UPDATABLE);
+
+
             //If result exit run this and create a table
-            if (!rubikTableexist()) {
+            if (!album_table_exist()) {
                 PreparedStatement psInsert = null;
                 // Creation of the table
                 String createTable = "CREATE TABLE if not exists " + INVENTRY + " (" + PK_COLUMN + " int not null auto_increment, "
-                        + ARTIST_NAME + " VARCHAR(50), " + TITLE + " VARCHAR(50), "+ PRICE + " DOUBLE,   "+ CONID + " int , " + DATE_ENTER + "  Date, Primary key (" + PK_COLUMN + "))";
+                        + ARTIST_NAME + " VARCHAR(50), " + TITLE + " VARCHAR(50), "+ PRICE + " DOUBLE,   "+ CONID + " int ,  Primary key (" + PK_COLUMN + "))";
                 System.out.println(createTable);
 
 
-                statement.executeUpdate(createTable);
+                statementAlbum.executeUpdate(createTable);
 
 
-                String addDataSql = " INSERT INTO " +  INVENTRY  + "(" + ARTIST_NAME + "," + TITLE + ","+ PRICE +", "+ CONID + ", " + DATE_ENTER +") VALUES  (?, ?, ?, ?, ?)";
+                String addDataSql = " INSERT INTO " +  INVENTRY  + "(" + ARTIST_NAME + "," + TITLE + ","+ PRICE +", "+ CONID +") VALUES  (?, ?, ?, ?)";
                 System.out.println(addDataSql);
                 psInsert = conn.prepareStatement(addDataSql);
                 //Setting of prepared statement varioable
@@ -140,26 +174,23 @@ public class RecordStore {
 
 
 
-
-                java.sql.Date date;
-                java.util.Date dateConsigned = new java.util.Date();
-                date = new java.sql.Date(dateConsigned.getTime());
-
-
-                LP testLP1 = new LP("Michael Jackson", "Thriller",  9.99, 4,java.sql.Date.valueOf(date.toString()));
-                LP testLP2 = new LP("Replacements", "Hootenanny",  7.99, 3, java.sql.Date.valueOf(date.toString()));
+                LP testLP1 = new LP("Michael Jackson", "Thriller",  9.99, 5);
+                LP testLP2 = new LP("Replacements", "Hootenanny",  7.99, 3);
                 //Hello
 
 
-                CD testCD1 = new CD("Lady Gaga", "The Fame Monster",  6.99, 3, java.sql.Date.valueOf(date.toString()) );
-                CD testCD2 = new CD("Bob Dylan", "Basement Tapes", 9.99, 3, java.sql.Date.valueOf(date.toString()));
+                CD testCD1 = new CD("Lady Gaga", "The Fame Monster",  6.99, 7);
+                CD testCD2 = new CD("Bob Dylan", "Basement Tapes", 9.99, 3);
+
+
+
                 String artistNameCD1 = testCD1.getArtist();
 
                 psInsert.setString(1, testCD1.getArtist());
                 psInsert.setString(2, testCD1.getTitle());
                 psInsert.setDouble(3, testCD1.getPrice());
                 psInsert.setInt(4, testCD1.getConID());
-                psInsert.setDate(5, java.sql.Date.valueOf("2014-12-3"));
+//                psInsert.setDate(5, java.sql.Date.valueOf("2014-12-3"));
                 psInsert.executeUpdate();
 
 
@@ -196,6 +227,34 @@ public class RecordStore {
 
 
             }
+
+            if(!consig_table_exist()){
+                PreparedStatement congInsert;
+
+                String createConsignTable = "CREATE TABLE if not exists " + CONSIG_TALBLE + " (" + PK_COLUMN + " int not null auto_increment, "
+                        + CONSIG_NAME + " VARCHAR(50), " + CONID + " int, "+ PHONE_NUM+ " VARCHAR(50),   "+ MONEYOWED + " double ,  Primary key (" + PK_COLUMN + "))";
+                System.out.println(createConsignTable);
+                statementAlbum.executeUpdate(createConsignTable);
+
+                Consignor consignor1 = new Consignor("James Gray", 4, "61288478", 45.0);
+
+
+
+
+
+                String addDataSql = " INSERT INTO " +  CONSIG_TALBLE  + "(" + CONSIG_NAME + "," + CONID + ","+ PHONE_NUM +", "+ MONEYOWED +") VALUES  (?, ?, ?, ?)";
+                System.out.println(addDataSql);
+                congInsert = conn.prepareStatement(addDataSql);
+
+                congInsert.setString(1, consignor1.getConsignorName());
+                congInsert.setInt(2, consignor1.getConID());
+                congInsert.setString(3, consignor1.getConsignorPhone());
+                congInsert.setDouble(4, consignor1.getMoneyOwed());
+                congInsert.executeUpdate();
+                congInsert.close();
+
+
+            }
             return true;
 
             //Catch and any and display the error in the command line
@@ -208,112 +267,80 @@ public class RecordStore {
 
     }
     //A method that checks if result exist
-    private static boolean rubikTableexist() throws SQLException{
+    private static boolean album_table_exist() throws SQLException{
         String checkQuery = "SHOW TABLES LIKE '"+ INVENTRY +"'";
-        ResultSet tableRs = statement.executeQuery(checkQuery);
+        ResultSet tableRs = statementAlbum.executeQuery(checkQuery);
         if(tableRs.next()){
             return true;
         }
         return false;
     }
+
+    private static boolean consig_table_exist()throws SQLException{
+        String checkQuery = "SHOW TABLES LIKE '"+ CONSIG_TALBLE+"'";
+        ResultSet tableCt = statementConsig.executeQuery(checkQuery);
+        if(tableCt.next()){
+            return true;
+        }
+        else {
+            return false;
+        }
+    }
+
     //A method that shut down th database successfully by closing all of the various variable use.
-    public static void shutDown(){
+    public static void shutDown() {
         try {
-            if (rs != null) {
-                rs.close();
+            if (resultSetalAlbum != null) {
+                resultSetalAlbum.close();
 
             }
-        }catch (SQLException se){
+        } catch (SQLException se) {
             se.printStackTrace();
         }
-        try{
-            if(statement !=null){
-                statement.close();
+        try {
+            if (statementAlbum != null) {
+                statementAlbum.close();
             }
-        }catch (SQLException e){
+        } catch (SQLException e) {
             e.printStackTrace();
         }
-        try{
-            if(conn != null){
+        try {
+            if (conn != null) {
                 conn.close();
             }
-        }catch (SQLException e){
+        } catch (SQLException e) {
             e.printStackTrace();
         }
+    }
 
+    public static void shutDownCosig() {
+        try {
+            if (resultSetConsig != null) {
+                resultSetConsig.close();
 
-
-
-
-
-
-//        //Create some example CDs and add them to an inventory list
-//        ArrayList<CD> cdInventory = new ArrayList<CD>();
-//
-//        CD testCD1 = new CD("Lady Gaga", "The Fame Monster", 6.99);
-//        CD testCD2 = new CD("Bob Dylan", "Basement Tapes", 9.99);
-//
-//        cdInventory.add(testCD1);
-//        cdInventory.add(testCD2);
-//
-//        //Create some example LPs and add them to an inventory list
-//        ArrayList<LP> lpInventory = new ArrayList<LP>();
-//
-//        LP testLP1 = new LP("Michael Jackson", "Thriller", 4, 9.99);
-//        LP testLP2 = new LP("Replacements", "Hootenanny", 3, 7.99);
-//
-//        lpInventory.add(testLP1);
-//        lpInventory.add(testLP2);
-//
-//        System.out.println("All LPs in the inventory:");
-//        for (LP lp : lpInventory) {
-//            System.out.println(lp);
-//        }
-//
-//        System.out.println("All CDs in the inventory");
-//        for (CD cd : cdInventory) {
-//            System.out.println(cd);
-//        }
-//
-//        //Create a master inventory list with all Albums in
-//
-//        ArrayList<Album> allInventory = new ArrayList<Album>();
-//        allInventory.addAll(lpInventory);
-//        allInventory.addAll(cdInventory);
-//
-//
-//        //Search inventory for any CD or LP that matches a search term
-//        Scanner scanner = new Scanner(System.in);
-//        System.out.println("Enter artist or title to search for. Works for partial artists/titles.");
-//        String searchString = scanner.next();
-//
-//        scanner.close();
-//
-//        searchForAlbum(allInventory, searchString);
-//
-//    }
-//
-//    private static void searchForAlbum(ArrayList<Album> albums, String searchTerm){
-//
-//        searchTerm = searchTerm.toLowerCase();  //Work in lowercase
-//
-//        boolean found = false;
-//
-//        for (Album a : albums) {
-//            if (a.getTitle().toLowerCase().contains(searchTerm) || a.getArtist().toLowerCase().contains(searchTerm)){
-//                found = true;
-//                System.out.println(a);
-//                //Equivalent to
-//                //System.out.println(a.toString());
-//            }
-//        }
-//
-//        if (found == false) {
-//            System.out.println("No matching albums found for this search term");
-//        }
+            }
+        } catch (SQLException se) {
+            se.printStackTrace();
+        }
+        try {
+            if (resultSetConsig != null) {
+                resultSetConsig.close();
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        try {
+            if (conn != null) {
+                conn.close();
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
 
     }
 
-
 }
+
+
+
 
