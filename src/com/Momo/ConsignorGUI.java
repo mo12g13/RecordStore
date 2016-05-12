@@ -105,6 +105,12 @@ public class ConsignorGUI extends JFrame implements WindowListener {
                 }
             }
         });
+        quitButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                System.exit(0);
+            }
+        });
     }
 
     //An action listener for the delete button
