@@ -108,7 +108,7 @@ public class RecordStore {
             if(resultSetConsig !=null){
                 resultSetConsig.close();
             }
-            String loadData = "SELECT * FROM " + INVENTRY ;
+            String loadData = "SELECT * FROM " + INVENTRY ;      //  "Select * from inventry where sold = false"  - or similar.
             resultSetalAlbum = statementAlbum.executeQuery(loadData);
             if (dataModel == null) {
                 dataModel = new AlbumDataModel(resultSetalAlbum);
@@ -236,6 +236,9 @@ public class RecordStore {
                 String createConsignTable = "CREATE TABLE if not exists " + CONSIG_TALBLE
                         + " (" + PK_COLUMN + " int not null auto_increment, "
                         + CONSIG_NAME + " VARCHAR(50), " + CONID + " int, "+ PHONE_NUM + " VARCHAR(50),   "+ MONEYOWED + " double ,  Primary key (" + PK_COLUMN + "))";
+
+                // todo - add another column - sold boolean
+
                 System.out.println(createConsignTable);
                 statementAlbum.executeUpdate(createConsignTable);
 
@@ -259,6 +262,14 @@ public class RecordStore {
 
 
             }
+
+
+            //create a table for sales.
+
+            // columns: album ID, sale price, consigner id (?)
+
+            //
+
             return true;
 
             //Catch and any and display the error in the command line

@@ -119,7 +119,21 @@ public class AlbumGui extends JFrame implements WindowListener {
         });
 
 
+        buyMusicButton.addActionListener(new ActionListener() {
 
+            @Override
+            public void actionPerformed(ActionEvent e) {
+
+                //todo
+
+                // 1. figure out which row is selected
+                // 2. get data from first column, which is your id
+                // 3. do a update query - update sold column in inventory table to set sold = true
+                // 4. Create an entry in your sales table.
+                // 5. Refresh JTable
+
+            }
+        });
 
 
 
