@@ -89,9 +89,6 @@ public class AlbumDataModel extends AbstractTableModel{
         }
     }
 
-//    public boolean updateString(){
-//
-//    }
 
 
     //A method that insert a row in the database

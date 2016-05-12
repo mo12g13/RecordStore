@@ -26,6 +26,7 @@ public class AlbumGui extends JFrame implements WindowListener {
     private JTextField price;
     private JButton buyMusicButton;
     private JButton viewConsignorTableButton;
+    private JButton salesTableButton;
     public static  ConsignorModel consignorModel;
 
     AlbumDataModel addToTable;
@@ -74,13 +75,6 @@ public class AlbumGui extends JFrame implements WindowListener {
                     return;
                 }
 
-//                String dateEnter = date.getText();
-//                        ;
-//                if(dateEnter== null || dateEnter.trim().equals("")){
-//                    JOptionPane.showMessageDialog(rootpane, "Enter valid text", "Error", JOptionPane.ERROR_MESSAGE);
-//                    return;
-//
-//                }
 
 
                 int conNumID;

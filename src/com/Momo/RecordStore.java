@@ -108,7 +108,7 @@ public class RecordStore {
             if(resultSetConsig !=null){
                 resultSetConsig.close();
             }
-            String loadData = "SELECT * FROM " + INVENTRY ;
+            String loadData = " SELECT * FROM " + INVENTRY ;
             resultSetalAlbum = statementAlbum.executeQuery(loadData);
             if (dataModel == null) {
                 dataModel = new AlbumDataModel(resultSetalAlbum);
@@ -232,10 +232,11 @@ public class RecordStore {
 
             if(!consig_table_exist()){
                 PreparedStatement congInsert;
-
+                //Creating the consignor table
                 String createConsignTable = "CREATE TABLE if not exists " + CONSIG_TALBLE
                         + " (" + PK_COLUMN + " int not null auto_increment, "
-                        + CONSIG_NAME + " VARCHAR(50), " + CONID + " int, "+ PHONE_NUM + " VARCHAR(50),   "+ MONEYOWED + " double ,  Primary key (" + PK_COLUMN + "))";
+                        + CONSIG_NAME + " VARCHAR(50), " + CONID + " int, "+ PHONE_NUM + " VARCHAR(50),   "+ MONEYOWED
+                        + " double ,  Primary key (" + PK_COLUMN + "))";
                 System.out.println(createConsignTable);
                 statementAlbum.executeUpdate(createConsignTable);
 
@@ -244,9 +245,8 @@ public class RecordStore {
 
 
 
-
-                String addDataSql = " INSERT INTO " +  CONSIG_TALBLE  + "(" + CONSIG_NAME + ","
-                        + CONID + ","+ PHONE_NUM +", "+ MONEYOWED +") VALUES  (?, ?, ?, ?)";
+                //Inserting data in the consignor table
+                String addDataSql = " INSERT INTO " +  CONSIG_TALBLE  + "(" + CONSIG_NAME + "," + CONID + ","+ PHONE_NUM +", "+ MONEYOWED +") VALUES  (?, ?, ?, ?)";
                 System.out.println(addDataSql);
                 congInsert = conn.prepareStatement(addDataSql);
 
