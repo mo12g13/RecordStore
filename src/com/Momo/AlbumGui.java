@@ -133,7 +133,7 @@ public class AlbumGui extends JFrame implements WindowListener {
                 }
                 boolean todelete = recordStoreDataModel.deleteRow(row);
                 if (todelete) {
-                    RecordStore.loadRubikCubeData();
+                    RecordStore.loadTables();
                 } else {
                     JOptionPane.showMessageDialog(rootPane, "Warning, Error deleting cube_solver");
                 }

@@ -66,7 +66,7 @@ public class RecordStore {
             System.exit(-1);
 
         }
-        if (!loadRubikCubeData()) {
+        if (!loadTables()) {
             System.exit(-1);
 
         }
@@ -99,7 +99,7 @@ public class RecordStore {
 
 
     //A method that either create or recreate the resultset
-    public static boolean loadRubikCubeData() {
+    public static boolean loadTables() {
         try {
             if (resultSetalAlbum != null) {
                 resultSetalAlbum.close();
@@ -159,14 +159,16 @@ public class RecordStore {
                 PreparedStatement psInsert = null;
                 // Creation of the table
                 String createTable = "CREATE TABLE if not exists " + INVENTRY + " (" + PK_COLUMN + " int not null auto_increment, "
-                        + ARTIST_NAME + " VARCHAR(50), " + TITLE + " VARCHAR(50), "+ PRICE + " DOUBLE,   "+ CONID + " int ,  Primary key (" + PK_COLUMN + "))";
+                        + ARTIST_NAME + " VARCHAR(50), " + TITLE + " VARCHAR(50), "+ PRICE + " DOUBLE,   "+ CONID
+                        + " int ,  Primary key (" + PK_COLUMN + "))";
                 System.out.println(createTable);
 
 
                 statementAlbum.executeUpdate(createTable);
 
 
-                String addDataSql = " INSERT INTO " +  INVENTRY  + "(" + ARTIST_NAME + "," + TITLE + ","+ PRICE +", "+ CONID +") VALUES  (?, ?, ?, ?)";
+                String addDataSql = " INSERT INTO " +  INVENTRY  + "(" + ARTIST_NAME + "," + TITLE
+                        + ","+ PRICE +", "+ CONID +") VALUES  (?, ?, ?, ?)";
                 System.out.println(addDataSql);
                 psInsert = conn.prepareStatement(addDataSql);
                 //Setting of prepared statement varioable
@@ -231,8 +233,9 @@ public class RecordStore {
             if(!consig_table_exist()){
                 PreparedStatement congInsert;
 
-                String createConsignTable = "CREATE TABLE if not exists " + CONSIG_TALBLE + " (" + PK_COLUMN + " int not null auto_increment, "
-                        + CONSIG_NAME + " VARCHAR(50), " + CONID + " int, "+ PHONE_NUM+ " VARCHAR(50),   "+ MONEYOWED + " double ,  Primary key (" + PK_COLUMN + "))";
+                String createConsignTable = "CREATE TABLE if not exists " + CONSIG_TALBLE
+                        + " (" + PK_COLUMN + " int not null auto_increment, "
+                        + CONSIG_NAME + " VARCHAR(50), " + CONID + " int, "+ PHONE_NUM + " VARCHAR(50),   "+ MONEYOWED + " double ,  Primary key (" + PK_COLUMN + "))";
                 System.out.println(createConsignTable);
                 statementAlbum.executeUpdate(createConsignTable);
 
@@ -242,7 +245,8 @@ public class RecordStore {
 
 
 
-                String addDataSql = " INSERT INTO " +  CONSIG_TALBLE  + "(" + CONSIG_NAME + "," + CONID + ","+ PHONE_NUM +", "+ MONEYOWED +") VALUES  (?, ?, ?, ?)";
+                String addDataSql = " INSERT INTO " +  CONSIG_TALBLE  + "(" + CONSIG_NAME + ","
+                        + CONID + ","+ PHONE_NUM +", "+ MONEYOWED +") VALUES  (?, ?, ?, ?)";
                 System.out.println(addDataSql);
                 congInsert = conn.prepareStatement(addDataSql);
 
